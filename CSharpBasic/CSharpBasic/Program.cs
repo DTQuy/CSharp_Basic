@@ -1,17 +1,40 @@
-﻿using System;
+﻿/*LUU Y: 
+ * -Tiers: Phân tách ra nhiều phần theo vật lý (physical)
+ * -Layer: tương đương với mỗi công việc duy nhất (logical)
+ * Abstrast: không tạo được intent (không new được) -> có Contructor
+ * Genneric type???, Factory???/Abtract Button???///Design Button
+ * EF CORE -> ORM ???
+ * có DB rồi map Modle ->Database First
+ * Method Interface luôn Public
+ */
+
+/*
+- Create 4 ofjects: user(seed), products(seed), cart, order - database schema
+- Create SQL adapter: Adapter - insert, update, delete, select
+- Create cart service: add product to user cart
+            -lẤY cart
+            - láy product trong Cart ->string
+            -split ->list
+            - join
+    ***add cart 
+- Create order service: create user order - add product from user's cart to order; delete products in cart */
+
+using System;
 using System.Collections.Generic;
 using CSharpBasic.SQLAdapter;
 using CSharpBasic.Object;
-using CSharpBasic.Object;
-using CSharpBasic.SQLAdapter;
+using CSharpBasic.BussinessService;
 
 namespace CSharpBasic
 {
     class Program
     {
+
         static void Main()
         {
             string connectionString = "Server=TQ23\\SQLEXPRESS;Database=csharp_basic;Integrated Security=True;";
+            CartService cartService = new CartService(connectionString);
+
 
             bool exit = false;
             do
@@ -19,6 +42,7 @@ namespace CSharpBasic
                 Console.WriteLine("Select table:");
                 Console.WriteLine("1. Customers");
                 Console.WriteLine("2. Products");
+                Console.WriteLine("3. Cart");
                 Console.WriteLine("0. Exit");
 
                 Console.Write("Enter your choice: ");
@@ -31,6 +55,9 @@ namespace CSharpBasic
                         break;
                     case 2:
                         HandleProductTable(connectionString);
+                        break;
+                    case 3:
+                        ManageCart(cartService);
                         break;
                     case 0:
                         Console.WriteLine("Exiting in 5 seconds...");
@@ -320,6 +347,89 @@ namespace CSharpBasic
                 Console.WriteLine("Product deleted successfully.");
             else
                 Console.WriteLine("Failed to delete product.");
+        }
+        static void ManageCart(CartService cartService)
+        {
+            bool exit = false;
+            do
+            {
+                Console.WriteLine("Cart Menu:");
+                Console.WriteLine("1. View Customer Carts");
+                Console.WriteLine("2. View Customer Cart");
+                Console.WriteLine("3. Add Product to Customer Cart");
+                Console.WriteLine("4. Remove Product from Customer Cart");
+                Console.WriteLine("0. Back to Main Menu");
+
+                Console.Write("Enter your choice: ");
+                int choice = Convert.ToInt32(Console.ReadLine());
+
+                switch (choice)
+                {
+                    case 1:
+                        ViewCustomerCarts(cartService);
+                        break;
+                    case 2:
+                        ViewCustomerCart(cartService);
+                        break;
+                    case 3:
+                        AddProductToCustomerCart(cartService);
+                        break;
+                    case 4:
+                        RemoveProductFromCustomerCart(cartService);
+                        break;
+                    case 0:
+                        exit = true;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice.");
+                        break;
+                }
+            } while (!exit);
+        }
+
+        static void ViewCustomerCarts(CartService cartService)
+        {
+            List<Cart> customerCarts = cartService.GetCustomerCarts();
+            Console.WriteLine("Customer Carts:");
+            foreach (var customerCart in customerCarts)
+            {
+                Console.WriteLine($"Cart ID: {customerCart.Id}, Customer ID: {customerCart.CustomerId}");
+            }
+        }
+
+        static void ViewCustomerCart(CartService cartService)
+        {
+            Console.Write("Enter customer ID to view cart: ");
+            Guid customerId = Guid.Parse(Console.ReadLine());
+
+            cartService.ViewCustomerCart(customerId);
+        }
+
+        static void AddProductToCustomerCart(CartService cartService)
+        {
+            Console.Write("Enter customer ID: ");
+            Guid customerId = Guid.Parse(Console.ReadLine());
+
+            Console.Write("Enter product ID: ");
+            Guid productId = Guid.Parse(Console.ReadLine());
+
+            Console.Write("Enter quantity: ");
+            int quantity = Convert.ToInt32(Console.ReadLine());
+
+            cartService.AddProductToCart(customerId, productId, quantity);
+            Console.WriteLine("Product added to customer cart.");
+        }
+
+        static void RemoveProductFromCustomerCart(CartService cartService)
+        {
+            Console.Write("Enter customer ID: ");
+            Guid customerId = Guid.Parse(Console.ReadLine());
+
+            Console.Write("Enter product ID: ");
+            Guid productId = Guid.Parse(Console.ReadLine());
+
+            cartService.RemoveProductFromCart(customerId, productId);
+            Console.WriteLine("Product removed from customer cart.");
         }
     }
 }
