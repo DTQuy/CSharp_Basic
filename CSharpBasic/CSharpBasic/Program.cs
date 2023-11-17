@@ -34,6 +34,7 @@ namespace CSharpBasic
         {
             string connectionString = "Server=TQ23\\SQLEXPRESS;Database=csharp_basic;Integrated Security=True;";
             CartService cartService = new CartService(connectionString);
+            OrderService orderService = new OrderService(connectionString); 
 
 
             bool exit = false;
@@ -43,6 +44,7 @@ namespace CSharpBasic
                 Console.WriteLine("1. Customers");
                 Console.WriteLine("2. Products");
                 Console.WriteLine("3. Cart");
+                Console.WriteLine("4. Orders");
                 Console.WriteLine("0. Exit");
 
                 Console.Write("Enter your choice: ");
@@ -59,6 +61,9 @@ namespace CSharpBasic
                     case 3:
                         ManageCart(cartService);
                         break;
+                    case 4:
+                        ManageOrders(cartService,orderService);
+                        break;
                     case 0:
                         Console.WriteLine("Exiting in 5 seconds...");
                         System.Threading.Thread.Sleep(5000);
@@ -71,6 +76,10 @@ namespace CSharpBasic
             } while (!exit);
         }
 
+        /// <summary>
+        /// HandleCustomerTable
+        /// </summary>
+        /// <param name="connectionString"></param>
         static void HandleCustomerTable(string connectionString)
         {
             CustomerSqlAdapter customerAdapter = new CustomerSqlAdapter(connectionString);
@@ -107,6 +116,10 @@ namespace CSharpBasic
             }
         }
 
+        /// <summary>
+        /// View Customer
+        /// </summary>
+        /// <param name="customerAdapter"></param>
         static void ViewCustomers(CustomerSqlAdapter customerAdapter)
         {
             List<Customer> customers = customerAdapter.GetData<Customer>();
@@ -125,6 +138,11 @@ namespace CSharpBasic
             }
         }
 
+
+        /// <summary>
+        /// add Customer
+        /// </summary>
+        /// <param name="customerAdapter"></param>
         static void AddCustomer(CustomerSqlAdapter customerAdapter)
         {
             Console.Write("Enter first name: ");
@@ -164,6 +182,10 @@ namespace CSharpBasic
             }
         }
 
+        /// <summary>
+        /// Update Customer
+        /// </summary>
+        /// <param name="customerAdapter"></param>
         static void UpdateCustomer(CustomerSqlAdapter customerAdapter)
         {
             Console.Write("Enter customer ID to update: ");
@@ -225,6 +247,10 @@ namespace CSharpBasic
             }
         }
 
+        /// <summary>
+        /// Delete Customer
+        /// </summary>
+        /// <param name="customerAdapter"></param>
         static void DeleteCustomer(CustomerSqlAdapter customerAdapter)
         {
             Console.Write("Enter customer ID to delete: ");
@@ -242,6 +268,10 @@ namespace CSharpBasic
             }
         }
 
+        /// <summary>
+        /// HandleProductTable
+        /// </summary>
+        /// <param name="connectionString"></param>
         static void HandleProductTable(string connectionString)
         {
             ISQLAdapter productAdapter = new ProductSqlAdapter(connectionString);
@@ -285,6 +315,10 @@ namespace CSharpBasic
             }
         }
 
+        /// <summary>
+        /// AddProduct
+        /// </summary>
+        /// <param name="productAdapter"></param>
         static void AddProduct(ISQLAdapter productAdapter)
         {
             Console.Write("Enter product name: ");
@@ -308,6 +342,10 @@ namespace CSharpBasic
                 Console.WriteLine("Failed to add product.");
         }
 
+        /// <summary>
+        /// UpdateProduct
+        /// </summary>
+        /// <param name="productAdapter"></param>
         static void UpdateProduct(ISQLAdapter productAdapter)
         {
             Console.Write("Enter product ID to update: ");
@@ -336,6 +374,10 @@ namespace CSharpBasic
             }
         }
 
+        /// <summary>
+        /// DeleteProduct
+        /// </summary>
+        /// <param name="productAdapter"></param>
         static void DeleteProduct(ISQLAdapter productAdapter)
         {
             Console.Write("Enter product ID to delete: ");
@@ -348,6 +390,11 @@ namespace CSharpBasic
             else
                 Console.WriteLine("Failed to delete product.");
         }
+
+        /// <summary>
+        /// ManageCart
+        /// </summary>
+        /// <param name="cartService"></param>
         static void ManageCart(CartService cartService)
         {
             bool exit = false;
@@ -387,6 +434,10 @@ namespace CSharpBasic
             } while (!exit);
         }
 
+        /// <summary>
+        /// ViewCustomerCarts
+        /// </summary>
+        /// <param name="cartService"></param>
         static void ViewCustomerCarts(CartService cartService)
         {
             List<Cart> customerCarts = cartService.GetCustomerCarts();
@@ -397,6 +448,10 @@ namespace CSharpBasic
             }
         }
 
+        /// <summary>
+        /// ViewCustomerCart
+        /// </summary>
+        /// <param name="cartService"></param>
         static void ViewCustomerCart(CartService cartService)
         {
             Console.Write("Enter customer ID to view cart: ");
@@ -405,6 +460,10 @@ namespace CSharpBasic
             cartService.ViewCustomerCart(customerId);
         }
 
+        /// <summary>
+        /// AddProductToCustomerCart
+        /// </summary>
+        /// <param name="cartService"></param>
         static void AddProductToCustomerCart(CartService cartService)
         {
             Console.Write("Enter customer ID: ");
@@ -420,6 +479,10 @@ namespace CSharpBasic
             Console.WriteLine("Product added to customer cart.");
         }
 
+        /// <summary>
+        /// RemoveProductFromCustomerCart
+        /// </summary>
+        /// <param name="cartService"></param>
         static void RemoveProductFromCustomerCart(CartService cartService)
         {
             try
@@ -453,5 +516,62 @@ namespace CSharpBasic
             }
         }
 
+        /// <summary>
+        /// ManageOrders
+        /// </summary>
+        /// <param name="cartService"></param>
+        /// <param name="orderService"></param>
+        static void ManageOrders(CartService cartService, OrderService orderService)
+        {
+            bool exit = false;
+            do
+            {
+                Console.WriteLine("Order Management:");
+                Console.WriteLine("1. Create Order");
+                Console.WriteLine("2. View Orders");
+                Console.WriteLine("0. Back");
+
+                Console.Write("Enter your choice: ");
+                int choice = Convert.ToInt32(Console.ReadLine());
+
+                switch (choice)
+                {
+                    case 1:
+                        CreateOrder(orderService);
+                        break;
+                    case 2:
+                        ViewOrders(orderService);
+                        break;
+                    case 0:
+                        exit = true;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice.");
+                        break;
+                }
+
+            } while (!exit);
+        }
+
+        /// <summary>
+        /// CreateOrder
+        /// </summary>
+        /// <param name="orderService"></param>
+        static void CreateOrder(OrderService orderService)
+        {
+            Console.Write("Enter customer ID: ");
+            Guid customerId = Guid.Parse(Console.ReadLine());
+
+            orderService.CreateOrder(customerId);
+        }
+
+        /// <summary>
+        /// ViewOrders
+        /// </summary>
+        /// <param name="orderService"></param>
+        static void ViewOrders(OrderService orderService)
+        {
+            orderService.ViewOrders();
+        }
     }
 }

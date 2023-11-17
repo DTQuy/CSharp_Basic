@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace CSharpBasic.Object
 {
-    internal class OrderDetail
+    public class OrderDetail
     {
+        public Guid OrderId { get; set; }
+        public Guid ProductId { get; set; }
     }
+
 }

@@ -5,15 +5,15 @@ using System.Data.SqlClient;
 
 namespace CSharpBasic.SQLAdapter
 {
-    public class OrderSqlAdapter : ISQLAdapter
+    public class OrderDetailSqlAdapter : ISQLAdapter
     {
         public string ConnectionString { get; set; }
         public string TableName { get; set; }
 
-        public OrderSqlAdapter(string connectionString)
+        public OrderDetailSqlAdapter(string connectionString)
         {
             this.ConnectionString = connectionString;
-            this.TableName = "orders";
+            this.TableName = "order_details";
         }
 
         public int Insert<T>(T item) where T : class, new()
@@ -165,6 +165,6 @@ namespace CSharpBasic.SQLAdapter
                 Console.WriteLine($"Error deleting order: {ex.Message}");
                 return 0;
             }
-        }   
+        }
     }
 }

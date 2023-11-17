@@ -6,7 +6,9 @@ using System.Linq;
 
 namespace CSharpBasic.BussinessService
 {
-    // CartService
+    /// <summary>
+    /// CartService
+    /// </summary>
     public class CartService
     {
         private readonly CartSqlAdapter cartAdapter;
@@ -17,8 +19,13 @@ namespace CSharpBasic.BussinessService
             this.cartAdapter = new CartSqlAdapter(connectionString);
             this.cartDetailSqlAdapter = new CartDetailSqlAdapter(connectionString);
         }
-        
 
+        /// <summary>
+        /// AddProductToCart
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="productId"></param>
+        /// <param name="quantity"></param>
         public void AddProductToCart(Guid customerId, Guid productId, int quantity)
         {
             Cart customerCart = GetCustomerCart(customerId);
@@ -58,17 +65,30 @@ namespace CSharpBasic.BussinessService
             Console.WriteLine($"Product added to cart. Cart ID: {customerCart.Id}");
         }
 
+
+        /// <summary>
+        /// GetCustomerCarts
+        /// </summary>
+        /// <returns></returns>
         public List<Cart> GetCustomerCarts()
         {
             return cartAdapter.GetData<Cart>();
         }
-
+        /// <summary>
+        /// GetCartDetails
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         public List<CartDetail> GetCartDetails(Guid Id)
         {
             // Get cart details based on cartId
             return GetCartDetailsByCartId(Id);
         }
 
+        /// <summary>
+        /// ViewCustomerCart
+        /// </summary>
+        /// <param name="customerId"></param>
         public void ViewCustomerCart(Guid customerId)
         {
             Cart customerCart = GetCustomerCart(customerId);
@@ -92,6 +112,11 @@ namespace CSharpBasic.BussinessService
             }
         }
 
+        /// <summary>
+        /// RemoveProductFromCart
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="productId"></param>
         public void RemoveProductFromCart(Guid customerId, Guid productId)
         {
             // Remove product from the cart
@@ -119,8 +144,40 @@ namespace CSharpBasic.BussinessService
             }
         }
 
+        /// <summary>
+        /// ClearCustomerCart
+        /// </summary>
+        /// <param name="customerId"></param>
+        public void ClearCustomerCart(Guid customerId)
+        {
+            Cart customerCart = GetCustomerCart(customerId);
 
-        private Cart GetCustomerCart(Guid customerId)
+            if (customerCart != null)
+            {
+                // Xóa tất cả chi tiết giỏ hàng của khách hàng
+                List<CartDetail> cartDetails = GetCartDetailsByCartId(customerCart.Id);
+                foreach (var cartDetail in cartDetails)
+                {
+                    cartDetailSqlAdapter.Delete<CartDetail>(cartDetail.Id);
+                }
+
+                // Xóa giỏ hàng của khách hàng
+                cartAdapter.Delete<Cart>(customerCart.Id);
+
+                Console.WriteLine($"Customer cart cleared. Customer ID: {customerId}");
+            }
+            else
+            {
+                Console.WriteLine($"Customer cart not found for Customer ID: {customerId}");
+            }
+        }
+
+        /// <summary>
+        /// GetCustomerCart
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
+        public Cart GetCustomerCart(Guid customerId)
         {
             // Get customer cart from the database
             List<Cart> customerCarts = cartAdapter.GetData<Cart>();
@@ -134,7 +191,13 @@ namespace CSharpBasic.BussinessService
             return cartDetail;
         }
 
-        private CartDetail GetCartDetail(Guid Id, Guid productId)
+        /// <summary>
+        /// GetCartDetail
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        public CartDetail GetCartDetail(Guid Id, Guid productId)
         {
             var cartDetails = cartAdapter.GetData<CartDetail>();
             if (cartDetails != null && cartDetails.Any())
@@ -168,7 +231,7 @@ namespace CSharpBasic.BussinessService
 
             return null;
         }
-        private Product GetProductById(Guid productId)
+        public Product GetProductById(Guid productId)
         {
             
             var products = cartAdapter.GetData<Product>();

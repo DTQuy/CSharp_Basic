@@ -5,6 +5,9 @@ using System.Data.SqlClient;
 
 namespace CSharpBasic.SQLAdapter
 {
+    /// <summary>
+    /// CartSqlAdapter connectionString
+    /// </summary>
     public class CartSqlAdapter : ISQLAdapter
     {
         public string ConnectionString { get; set; }
@@ -16,6 +19,12 @@ namespace CSharpBasic.SQLAdapter
             this.TableName = "Cart";
         }
 
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public int Delete<T>(Guid id) where T : class, new()
         {
             try
@@ -38,6 +47,12 @@ namespace CSharpBasic.SQLAdapter
             }
         }
 
+        /// <summary>
+        /// get
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public T Get<T>(Guid id) where T : class, new()
         {
             try
@@ -72,6 +87,11 @@ namespace CSharpBasic.SQLAdapter
             return null;
         }
 
+        /// <summary>
+        /// get data
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public List<T> GetData<T>() where T : class, new()
         {
             try
@@ -108,6 +128,12 @@ namespace CSharpBasic.SQLAdapter
             }
         }
 
+        /// <summary>
+        /// insert
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public int Insert<T>(T item) where T : class, new()
         {
             try
@@ -141,7 +167,12 @@ namespace CSharpBasic.SQLAdapter
             }
         }
        
-
+        /// <summary>
+        /// update
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public int Update<T>(T item) where T : class, new()
         {
             try

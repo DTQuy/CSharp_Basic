@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace CSharpBasic.SQLAdapter
 {
+
+    /// <summary>
+    /// CartDetailSqlAdapter connectionString
+    /// </summary>
     public class CartDetailSqlAdapter: ISQLAdapter
     {
         public string ConnectionString { get; set; }
@@ -18,6 +22,12 @@ namespace CSharpBasic.SQLAdapter
             this.ConnectionString = connectionString;
             this.TableName = "cart_details";
         }
+        /// <summary>
+        /// Insert
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public int Insert<T>(T item) where T : class, new()
         {
             try
@@ -46,6 +56,11 @@ namespace CSharpBasic.SQLAdapter
             }
         }
 
+        /// <summary>
+        /// get data
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public List<T> GetData<T>() where T : class, new()
         {
             try
@@ -83,6 +98,12 @@ namespace CSharpBasic.SQLAdapter
             }
         }
 
+        /// <summary>
+        /// get
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public T Get<T>(Guid id) where T : class, new()
         {
             try
@@ -118,6 +139,12 @@ namespace CSharpBasic.SQLAdapter
             return null;
         }
 
+        /// <summary>
+        /// Update
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public int Update<T>(T item) where T : class, new()
         {
             try
@@ -144,6 +171,12 @@ namespace CSharpBasic.SQLAdapter
             }
         }
 
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public int Delete<T>(Guid id) where T : class, new()
         {
             try

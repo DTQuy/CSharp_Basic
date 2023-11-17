@@ -6,7 +6,29 @@ using System.Threading.Tasks;
 
 namespace CSharpBasic.Object
 {
-    internal class Order
+    public class Order
     {
+        /// <summary>
+        /// Id
+        /// </summary>
+        public Guid Id { get; set; }
+
+
+        /// <summary>
+        /// customerId
+        /// </summary> 
+        public Guid CustomerId { get; set; }
+
+        /// <summary>
+        /// Order Day
+        /// </summary>
+        public DateTime OrderDay { get; set; }
+
+
+        /// <summary>
+        /// Total
+        /// </summary>
+        public decimal TotalAmount { get; set; }
     }
+
 }
