@@ -29,6 +29,7 @@ namespace CSharpBasic.BussinessService
                 {
                     Id = Guid.NewGuid(),
                     CustomerId = customerId
+
                 };
 
                 cartAdapter.Insert(customerCart);
@@ -40,7 +41,7 @@ namespace CSharpBasic.BussinessService
                 ProductId = productId,
                 Quantity = quantity
             };
-            cartAdapter.Insert(cartDetail);
+            cartDetailSqlAdapter.Insert(cartDetail);
 
 
             CartDetail existingDetail = GetCartDetail(customerCart.Id, productId);
@@ -71,7 +72,7 @@ namespace CSharpBasic.BussinessService
         public void ViewCustomerCart(Guid customerId)
         {
             Cart customerCart = GetCustomerCart(customerId);
-
+         
             if (customerCart != null)
             {
                 Console.WriteLine($"Customer Cart for Customer ID {customerId} (Cart ID: {customerCart.Id}):");
@@ -82,7 +83,7 @@ namespace CSharpBasic.BussinessService
                 Console.WriteLine("Cart Details:");
                 foreach (var cartDetail in cartDetails)
                 {
-                    Console.WriteLine($"Product ID: {cartDetail.ProductId}, Quantity: {cartDetail.Quantity}");
+                    Console.WriteLine($"Product ID: {cartDetail.ProductId}, Quantity: {cartDetail.Quantity}");              
                 }
             }
             else
@@ -95,16 +96,29 @@ namespace CSharpBasic.BussinessService
         {
             // Remove product from the cart
             CartDetail cartDetail = GetCartDetail(customerId, productId);
+
             if (cartDetail != null)
             {
-                cartAdapter.Delete<CartDetail>(cartDetail.Id);
-                Console.WriteLine($"Product removed from cart. Customer ID: {customerId}, Product ID: {productId}");
+                // Check if the quantity is greater than 1, then just update the quantity
+                if (cartDetail.Quantity > 1)
+                {
+                    cartDetail.Quantity -= 1;
+                    cartDetailSqlAdapter.Update(cartDetail);
+                    Console.WriteLine($"Quantity decreased for Product in cart. Customer ID: {customerId}, Product ID: {productId}");
+                }
+                else
+                {
+                    // If the quantity is 1 or less, remove the entire CartDetail
+                    cartDetailSqlAdapter.Delete<CartDetail>(cartDetail.Id);
+                    Console.WriteLine($"Product removed from cart. Customer ID: {customerId}, Product ID: {productId}");
+                }
             }
             else
             {
                 Console.WriteLine($"Product not found in the cart. Customer ID: {customerId}, Product ID: {productId}");
             }
         }
+
 
         private Cart GetCustomerCart(Guid customerId)
         {
@@ -116,22 +130,24 @@ namespace CSharpBasic.BussinessService
         private List<CartDetail> GetCartDetailsByCartId(Guid Id)
         {
             // Get cart details based on cartId
-            return cartAdapter.GetData<CartDetail>().Where(cd => cd.Id == Id).ToList();
+            List <CartDetail> cartDetail=cartDetailSqlAdapter.GetData<CartDetail>().Where(cd => cd.Id == Id).ToList();
+            return cartDetail;
         }
 
         private CartDetail GetCartDetail(Guid Id, Guid productId)
         {
             var cartDetails = cartAdapter.GetData<CartDetail>();
-
             if (cartDetails != null && cartDetails.Any())
             {
-                var cartDetail = cartDetails.FirstOrDefault(cd => cd.Id == Id && cd.ProductId == productId);
+                string UppperProductId = productId.ToString();
+                var cartDetail = cartDetails?.FirstOrDefault(cd => cd?.Id == Id && cd?.ProductId == productId);
+
 
                 if (cartDetail != null)
                 {
-                    Console.WriteLine($"Found CartDetail: CartId = {cartDetail.Id}, ProductId = {cartDetail.ProductId}, Quantity = {cartDetail.Quantity}");
-
                     var product = GetProductById(productId);
+                    Console.WriteLine($"Found CartDetail: CartId = {cartDetail.Id}, ProductId = {cartDetail.ProductId},Name={product.Name}, Price = {product.Price} , Quantity = {cartDetail.Quantity}");
+
                     if (product != null)
                     {
                         decimal totalValue = cartDetail.Quantity * product.Price;
@@ -152,13 +168,11 @@ namespace CSharpBasic.BussinessService
 
             return null;
         }
-
-
         private Product GetProductById(Guid productId)
         {
             
             var products = cartAdapter.GetData<Product>();
-            return products.FirstOrDefault(p => p.Id == productId);
+            return products.FirstOrDefault(p => p.ProductId == productId);
         }
 
 

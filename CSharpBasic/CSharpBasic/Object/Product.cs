@@ -14,7 +14,7 @@ namespace CSharpBasic.Object
         /// <summary>
         /// Id Product
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid ProductId { get; set; }
 
         /// <summary>
         /// Name of the product

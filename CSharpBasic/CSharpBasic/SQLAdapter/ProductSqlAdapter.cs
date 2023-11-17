@@ -27,9 +27,9 @@ namespace CSharpBasic.SQLAdapter
                 {
                     connection.Open();
 
-                    string query = $"DELETE FROM {TableName} WHERE product_id = @Id";
+                    string query = $"DELETE FROM {TableName} WHERE product_id = @ProductId";
                     SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@ProductId", id);
 
                     return command.ExecuteNonQuery();
                 }
@@ -49,9 +49,9 @@ namespace CSharpBasic.SQLAdapter
                 {
                     connection.Open();
 
-                    string query = $"SELECT product_id, name_product, price FROM {TableName} WHERE product_id = @Id";
+                    string query = $"SELECT product_id, name_product, price FROM {TableName} WHERE product_id = @ProductId";
                     SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@Id", id);
+                    command.Parameters.AddWithValue("@ProductId", id);
 
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -59,7 +59,7 @@ namespace CSharpBasic.SQLAdapter
                         {
                             Product product = new Product
                             {
-                                Id = Guid.Parse(reader["product_id"].ToString()),
+                                ProductId = Guid.Parse(reader["product_id"].ToString()),
                                 Name = reader["name_product"].ToString(),
                                 Price = Convert.ToDecimal(reader["price"])
                             };
@@ -96,7 +96,7 @@ namespace CSharpBasic.SQLAdapter
                         {
                             Product product = new Product
                             {
-                                Id = Guid.Parse(reader["product_id"].ToString()),
+                                ProductId = Guid.Parse(reader["product_id"].ToString()),
                                 Name = reader["name_product"].ToString(),
                                 Price = Convert.ToDecimal(reader["price"])
                             };
@@ -124,9 +124,9 @@ namespace CSharpBasic.SQLAdapter
                 {
                     connection.Open();
 
-                    string query = $"INSERT INTO {TableName} (product_id, name_product, price) VALUES (@Id, @Name, @Price)";
+                    string query = $"INSERT INTO {TableName} (product_id, name_product, price) VALUES (@ProductId, @Name, @Price)";
                     SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@Id", product.Id);
+                    command.Parameters.AddWithValue("@ProductId", product.ProductId);
                     command.Parameters.AddWithValue("@Name", product.Name);
                     command.Parameters.AddWithValue("@Price", product.Price);
 
@@ -150,11 +150,11 @@ namespace CSharpBasic.SQLAdapter
                 {
                     connection.Open();
 
-                    string query = $"UPDATE {TableName} SET name_product = @Name, price = @Price WHERE product_id = @Id";
+                    string query = $"UPDATE {TableName} SET name_product = @Name, price = @Price WHERE product_id = @ProductId";
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@Name", product.Name);
                     command.Parameters.AddWithValue("@Price", product.Price);
-                    command.Parameters.AddWithValue("@Id", product.Id);
+                    command.Parameters.AddWithValue("@ProductId", product.ProductId);
 
                     return command.ExecuteNonQuery();
                 }

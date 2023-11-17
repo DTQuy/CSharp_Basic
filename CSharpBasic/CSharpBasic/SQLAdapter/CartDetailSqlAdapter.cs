@@ -23,12 +23,13 @@ namespace CSharpBasic.SQLAdapter
             try
             {
                 CartDetail cartDetail = item as CartDetail;
+                
 
                 using (SqlConnection connection = new SqlConnection(ConnectionString))
                 {
                     connection.Open();
 
-                    string query = $"INSERT INTO {TableName} (cart_id, @product_id, quantity) VALUES (@Id, @ProductId)";
+                    string query = $"INSERT INTO dbo.{TableName} (cart_id, product_id, quantity) VALUES (@Id, @ProductId, @Quantity)";
                     SqlCommand command = new SqlCommand(query, connection);
                     command.Parameters.AddWithValue("@Id", cartDetail.Id);
                     command.Parameters.AddWithValue("@ProductId", cartDetail.ProductId);
@@ -160,7 +161,7 @@ namespace CSharpBasic.SQLAdapter
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting cart: {ex.Message}");
+                Console.WriteLine($"Error deleting cart detail: {ex.Message}");
                 return 0;
             }
         }

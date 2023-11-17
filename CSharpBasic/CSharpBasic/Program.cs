@@ -281,7 +281,7 @@ namespace CSharpBasic
             Console.WriteLine("Products:");
             foreach (var product in products)
             {
-                Console.WriteLine($"ID: {product.Id}, Name: {product.Name}, Price: {product.Price}");
+                Console.WriteLine($"ID: {product.ProductId}, Name: {product.Name}, Price: {product.Price}");
             }
         }
 
@@ -295,7 +295,7 @@ namespace CSharpBasic
 
             Product newProduct = new Product
             {
-                Id = Guid.NewGuid(),
+                ProductId = Guid.NewGuid(),
                 Name = name,
                 Price = price
             };
@@ -422,14 +422,36 @@ namespace CSharpBasic
 
         static void RemoveProductFromCustomerCart(CartService cartService)
         {
-            Console.Write("Enter customer ID: ");
-            Guid customerId = Guid.Parse(Console.ReadLine());
+            try
+            {
+                Console.Write("Enter customer ID: ");
+                string customerIdInput = Console.ReadLine();
 
-            Console.Write("Enter product ID: ");
-            Guid productId = Guid.Parse(Console.ReadLine());
+                if (Guid.TryParse(customerIdInput, out Guid customerId))
+                {
+                    Console.Write("Enter product ID: ");
+                    string productIdInput = Console.ReadLine();
 
-            cartService.RemoveProductFromCart(customerId, productId);
-            Console.WriteLine("Product removed from customer cart.");
+                    if (Guid.TryParse(productIdInput, out Guid productId))
+                    {
+                        cartService.RemoveProductFromCart(customerId, productId);
+                        Console.WriteLine("Product removed from customer cart.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid product ID. Please enter a valid GUID.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid customer ID. Please enter a valid GUID.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
         }
+
     }
 }

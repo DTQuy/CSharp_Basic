@@ -140,6 +140,7 @@ namespace CSharpBasic.SQLAdapter
                 return 0;
             }
         }
+       
 
         public int Update<T>(T item) where T : class, new()
         {
